@@ -1,0 +1,74 @@
+
+/*-------------------------------------
+Style
+-------------------------------------*/
+
+html,
+body {
+	min-height: 100%;
+	height: 100%;
+	font-size: 16px;
+	font: 100%;
+	max-width: 100%;
+}
+
+*,
+*:before,
+*:after {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.container {
+	width: 80%;
+	margin: 20px auto;
+}
+
+header {
+	font-size: 40px;
+	font-weight: 700;
+	text-align: center;
+	font-family: 'Raleway', sans-serif;
+}
+
+.description {
+	width: 100%;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-size: 18px;
+	font-family: 'Raleway', sans-serif;
+	font-weight: 300;
+}
+
+.block {
+	float: left;
+	width: 45%;
+}
+
+.render_block {
+	font-family: 'Raleway', sans-serif;
+	margin-left: 40px;
+}
+
+.markdown_block {
+	border-radius: 8px;
+	padding: 20px;
+	height: 500px;
+	margin-top: 25px;
+}
+
+@media screen and (max-width: 1000px) {
+
+	.block {
+		width: 100%;
+		float: none;
+	}
+
+	.render_block {
+		margin-left: 5px;
+	}
+
+}
+
