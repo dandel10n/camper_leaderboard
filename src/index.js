@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import $ from 'jquery';
 
 class Leaderboard extends React.Component {
 	constructor() {
     	super();
     	this.state = {
-    		JSON: {username: "", img: "", recent: "", alltime: ""}
+			JSON: []
     	}
+    	this.updateJSON = this.updateJSON.bind(this);
 	}
 
 	links = {
@@ -16,32 +16,21 @@ class Leaderboard extends React.Component {
 		alltime: "https://fcctop100.herokuapp.com/api/fccusers/top/alltime"
 	}
 
-    updateJSON = (rightLink) => {
-        var href = this.links[rightLink];
-        $.ajax(href, {
-            success: function(data) {
-                this.setState({
-                    JSON: data
-                });
-            }.bind(this),
-            error: function() {
-                alert("Error: AJAX call failed.");
-            }
+    updateJSON(period) {
+        var href = this.links[period];
+        fetch(href).then( (response) => {
+                return response.json();
+                }).then( (data) => {
+	                this.setState({
+	                    JSON: data
+	                });
+                }).catch(function(ex) {
+    			console.log('parsing failed', ex)
         });
     }
 
-    componentWillMount() {
-        $.ajax(this.links.recent, {
-            success: function(data) {
-                this.setState({
-                    JSON: data
-                });
-            }.bind(this),
-            error: function() {
-                alert("Error: AJAX call failed.");
-            },
-            async: false
-        });
+    componentDidMount() {
+		this.updateJSON("recent");
     }
 
     render() {
