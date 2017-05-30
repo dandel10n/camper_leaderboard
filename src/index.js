@@ -1,43 +1,58 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import $ from 'jquery';
 
 class Leaderboard extends React.Component {
 	constructor() {
     	super();
     	this.state = {
-      		data: [{
-      			"username":"diomed",
-				"img":"https://avatars3.githubusercontent.com/u/72777?v=3",
-				"alltime":4339,
-				"recent":529,
-				"lastUpdate":"2017-05-28T17:18:21.890Z"
-			},
-			{
-				"username":"sjames1958gm",
-				"img":"https://avatars.githubusercontent.com/u/4639625?v=3",
-				"alltime":7186,
-				"recent":516,
-				"lastUpdate":"2017-05-28T17:18:02.664Z"
-			},
-			{
-				"username":"anthonygallina1",
-				"img":"https://avatars.githubusercontent.com/u/11003055?v=3",
-				"alltime":4721,
-				"recent":508,
-				"lastUpdate":"2017-05-28T05:24:41.130Z"
-			}]
-      	};
-    };
-	render(){
-		return(
-			<Table data = {this.state.data} />
-		)
+    		JSON: {username: "", img: "", recent: "", alltime: ""}
+    	}
 	}
+
+	links = {
+		recent: "https://fcctop100.herokuapp.com/api/fccusers/top/recent",
+		alltime: "https://fcctop100.herokuapp.com/api/fccusers/top/alltime"
+	}
+
+    updateJSON = (rightLink) => {
+        var href = this.links[rightLink];
+        $.ajax(href, {
+            success: function(data) {
+                this.setState({
+                    JSON: data
+                });
+            }.bind(this),
+            error: function() {
+                alert("Error: AJAX call failed.");
+            }
+        });
+    }
+
+    componentWillMount() {
+        $.ajax(this.links.recent, {
+            success: function(data) {
+                this.setState({
+                    JSON: data
+                });
+            }.bind(this),
+            error: function() {
+                alert("Error: AJAX call failed.");
+            },
+            async: false
+        });
+    }
+
+    render() {
+        return (
+            <Table updateJSON={this.updateJSON} currentJSON={this.state.JSON} />
+        );
+    }
 }
 
 const Table = (props) => {
-	let rows = props.data.map((person, indexOfPerson) => {
+	let rows = props.currentJSON.map((person, indexOfPerson) => {
 		return <PersonRow 
 			key = {person.username}
 			data = {person}
@@ -50,8 +65,8 @@ const Table = (props) => {
 				<tr>
 					<th>№</th>
 					<th>Camper Name</th>
-					<th>Points in past 30 days</th>
-					<th>All time points</th>
+					<th><a href="#" className="link" onClick={() => {props.updateJSON('recent')} }>Points in past 30 days</a></th>
+					<th><a href="#" className="link" onClick={() => {props.updateJSON('alltime')} }>All time points</a></th>
 				</tr>
 			</thead>
   			<tbody> 
@@ -68,7 +83,7 @@ const PersonRow = (props) => {
 			{props.number}
 		</td>
 		<td>
-			{ props.data.username }
+			<a href={"https://www.freecodecamp.com/" + props.data.username}><img src={props.data.img} />{props.data.username}</a>
 		</td>
 		<td>
 			{ props.data.recent }
