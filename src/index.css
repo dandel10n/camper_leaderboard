@@ -20,55 +20,60 @@ body {
 	box-sizing: border-box;
 }
 
-.container {
-	width: 80%;
-	margin: 20px auto;
-}
-
 header {
-	font-size: 40px;
-	font-weight: 700;
 	text-align: center;
-	font-family: 'Raleway', sans-serif;
+	font-size: 40px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
-.description {
-	width: 100%;
+img {
+	width: 50px;
+	height: 50px;
+}
+
+th {
+	height: 50px;
+	line-height: 50px;
 	text-align: center;
+	background-color: #666;
+}
+
+tr {
+	background-color: #e6e6e6;
+}
+
+a {
+	display: block;
+}
+
+table {
+	margin: auto;
+}
+
+.container {
 	padding-top: 20px;
 	padding-bottom: 20px;
-	font-size: 18px;
-	font-family: 'Raleway', sans-serif;
-	font-weight: 300;
 }
 
-.block {
-	float: left;
-	width: 45%;
+.username {
+	min-width: 200px;
 }
 
-.render_block {
-	font-family: 'Raleway', sans-serif;
-	margin-left: 40px;
+.userdata,
+.userNumber  {
+	text-align: center;
 }
 
-.markdown_block {
-	border-radius: 8px;
-	padding: 20px;
-	height: 500px;
-	margin-top: 25px;
+.link {
+	text-decoration: none;
+	color: black;
+	display: inline-block;
+	width: 200px;
+	border: none;
 }
 
-@media screen and (max-width: 1000px) {
-
-	.block {
-		width: 100%;
-		float: none;
-	}
-
-	.render_block {
-		margin-left: 5px;
-	}
-
+.link.active {
+	color: white;
+	background-color: #333;
 }
-

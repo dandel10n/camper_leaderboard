@@ -2,11 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+
+/* 
+1. + сделать активными/неактивными кнопки
+2.   кэширование: не загружать данные, если они уже загружены
+3.   стили
+4.   рефреш - обновление данных для текущей страницы
+*/
 class Leaderboard extends React.Component {
 	constructor() {
     	super();
     	this.state = {
-			JSON: []
+			JSON: [],
+			sort: 'recent'
     	}
     	this.updateJSON = this.updateJSON.bind(this);
 	}
@@ -16,14 +24,22 @@ class Leaderboard extends React.Component {
 		alltime: "https://fcctop100.herokuapp.com/api/fccusers/top/alltime"
 	}
 
+	data = {
+		recent: [],
+		alltime: []
+	}
+
     updateJSON(period) {
+
         var href = this.links[period];
         fetch(href).then( (response) => {
                 return response.json();
                 }).then( (data) => {
 	                this.setState({
-	                    JSON: data
+	                    JSON: data,
+	                    sort: period
 	                });
+	                this.data.period = data;
                 }).catch(function(ex) {
     			console.log('parsing failed', ex)
         });
@@ -35,13 +51,13 @@ class Leaderboard extends React.Component {
 
     render() {
         return (
-            <Table updateJSON={this.updateJSON} currentJSON={this.state.JSON} />
+            <Table updateJSON={this.updateJSON} currentState={this.state} />
         );
     }
 }
 
 const Table = (props) => {
-	let rows = props.currentJSON.map((person, indexOfPerson) => {
+	let rows = props.currentState.JSON.map((person, indexOfPerson) => {
 		return <PersonRow 
 			key = {person.username}
 			data = {person}
@@ -49,35 +65,38 @@ const Table = (props) => {
 			/>
     })
 	return (
-		<table>
-			<thead>
-				<tr>
-					<th>№</th>
-					<th>Camper Name</th>
-					<th><a href="#" className="link" onClick={() => {props.updateJSON('recent')} }>Points in past 30 days</a></th>
-					<th><a href="#" className="link" onClick={() => {props.updateJSON('alltime')} }>All time points</a></th>
-				</tr>
-			</thead>
-  			<tbody> 
-  				{rows} 
-  			</tbody>
-		</table>
+		<div className="container">
+			<header>Camper Leaderboard</header>
+			<table>
+				<thead>
+					<tr>
+						<th>№</th>
+						<th>Camper Name</th>
+						<th><a href="#" className={props.currentState.sort === 'recent' ? 'link active' : 'link'} onClick={() => {props.updateJSON('recent')} }>Points in past 30 days</a></th>
+						<th><a href="#" className={props.currentState.sort === 'alltime' ? 'link active' : 'link'} onClick={() => {props.updateJSON('alltime')} }>All time points</a></th>
+					</tr>
+				</thead>
+				<tbody>
+					{rows}
+				</tbody>
+			</table>
+		</div>
 	)
 }
 
 const PersonRow = (props) => {
   return (
 	<tr>
-		<td>
+		<td className="userNumber">
 			{props.number}
 		</td>
-		<td>
-			<a href={"https://www.freecodecamp.com/" + props.data.username}><img src={props.data.img} />{props.data.username}</a>
+		<td className="username">
+			<a href={"https://www.freecodecamp.com/" + props.data.username}><img src={props.data.img} alt="user avatar"/>{props.data.username}</a>
 		</td>
-		<td>
+		<td className="userdata">
 			{ props.data.recent }
 		</td>
-		<td>
+		<td className="userdata">
 			{ props.data.alltime }
 		</td>
     </tr>
