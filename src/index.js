@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 
-/* 
+/*
 1. + сделать активными/неактивными кнопки
 2.   кэширование: не загружать данные, если они уже загружены
 3.   стили
@@ -17,6 +17,11 @@ class Leaderboard extends React.Component {
 			sort: 'recent'
     	}
     	this.updateJSON = this.updateJSON.bind(this);
+
+		this.data = {
+			recent: [],
+			alltime: []
+		}
 	}
 
 	links = {
@@ -24,25 +29,27 @@ class Leaderboard extends React.Component {
 		alltime: "https://fcctop100.herokuapp.com/api/fccusers/top/alltime"
 	}
 
-	data = {
-		recent: [],
-		alltime: []
-	}
-
     updateJSON(period) {
-
         var href = this.links[period];
-        fetch(href).then( (response) => {
-                return response.json();
-                }).then( (data) => {
-	                this.setState({
-	                    JSON: data,
-	                    sort: period
-	                });
-	                this.data.period = data;
-                }).catch(function(ex) {
-    			console.log('parsing failed', ex)
-        });
+
+        if (this.data[period].length > 0) {
+			this.setState({
+				JSON: this.data[period],
+				sort: period
+			});
+        } else {
+	        fetch(href).then( (response) => {
+				return response.json();
+			}).then( (data) => {
+				this.setState({
+					JSON: data,
+					sort: period
+				});
+				this.data[period] = data;
+			}).catch(function(ex) {
+				console.log('parsing failed', ex)
+			});
+		}
     }
 
     componentDidMount() {
@@ -58,7 +65,7 @@ class Leaderboard extends React.Component {
 
 const Table = (props) => {
 	let rows = props.currentState.JSON.map((person, indexOfPerson) => {
-		return <PersonRow 
+		return <PersonRow
 			key = {person.username}
 			data = {person}
 			number = {indexOfPerson + 1}
