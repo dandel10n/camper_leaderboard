@@ -17,8 +17,9 @@ class Leaderboard extends React.Component {
             currentChoice: 'recent'
         }
         this.updateJSON = this.updateJSON.bind(this);
+        this.refreshData = this.refreshData.bind(this);
 
-        this.data = {
+        this.cachedData = {
             recent: [],
             alltime: []
         }
@@ -32,9 +33,9 @@ class Leaderboard extends React.Component {
     updateJSON(period) {
         var href = this.links[period];
 
-        if (this.data[period].length > 0) {
+        if (this.cachedData[period].length > 0) {
             this.setState({
-                currentData: this.data[period],
+                currentData: this.cachedData[period],
                 currentChoice: period
             });
         } else {
@@ -45,11 +46,17 @@ class Leaderboard extends React.Component {
                     currentData: data,
                     currentChoice: period
                 });
-                this.data[period] = data;
+                this.cachedData[period] = data;
             }).catch(function(ex) {
                 console.log('parsing failed', ex)
             });
         }
+    }
+
+    refreshData(currentChoice) {
+        this.cachedData["recent"] = [];
+        this.cachedData["alltime"] = [];
+        this.updateJSON(currentChoice);
     }
 
     componentDidMount() {
@@ -58,7 +65,12 @@ class Leaderboard extends React.Component {
 
     render() {
         return (
-            <Table updateJSON={this.updateJSON} currentData={this.state.currentData} currentChoice = {this.state.currentChoice}/>
+            <Table
+                updateJSON={this.updateJSON}
+                refreshData={this.refreshData}
+                currentData={this.state.currentData}
+                currentChoice = {this.state.currentChoice}
+            />
         );
     }
 }
@@ -73,7 +85,10 @@ const Table = (props) => {
     })
     return (
         <div className="container">
-            <header>Camper Leaderboard</header>
+            <header>
+                <div className="header">Camper Leaderboard</div>
+                <button className="refreshButton" onClick={() => {props.refreshData(props.currentChoice)} }>Refresh</button>
+            </header>
             <table>
                 <thead>
                     <tr>
@@ -97,8 +112,8 @@ const PersonRow = (props) => {
         <td className="userNumber">
             {props.number}
         </td>
-        <td className="username">
-            <a href={"https://www.freecodecamp.com/" + props.data.username}><img src={props.data.img} alt="user avatar"/>{props.data.username}</a>
+        <td className="user">
+            <a href={"https://www.freecodecamp.com/" + props.data.username} className="username"><img src={props.data.img} alt="user avatar"/>{props.data.username}</a>
         </td>
         <td className="userdata">
             { props.data.recent }

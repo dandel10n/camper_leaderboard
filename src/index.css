@@ -10,6 +10,7 @@ body {
 	font-size: 16px;
 	font: 100%;
 	max-width: 100%;
+	font-family: 'Libre Baskerville', serif;
 }
 
 *,
@@ -21,10 +22,31 @@ body {
 }
 
 header {
+	margin-bottom: 20px;
+}
+
+.header {
 	text-align: center;
 	font-size: 40px;
 	margin-top: 20px;
 	margin-bottom: 20px;
+}
+
+.refreshButton {
+	width: 100px;
+	height: 30px;
+	font-size: 16px;
+	border: 0;
+    box-shadow: 0 0 5px 5px rgba(0,0,0, 0.3) inset;
+	display: block;
+	margin: auto;
+	outline: none;
+	cursor: pointer;
+}
+
+.refreshButton:active {
+	background-color: #333;
+	color: #fff;
 }
 
 img {
@@ -56,8 +78,20 @@ table {
 	padding-bottom: 20px;
 }
 
+.user {
+	width: 230px;
+}
+
+.userNumber {
+	width: 40px;
+}
+
 .username {
-	min-width: 200px;
+	color: black;
+}
+
+.username:hover {
+	text-decoration: none;
 }
 
 .userdata,
