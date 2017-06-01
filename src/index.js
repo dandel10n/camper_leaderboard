@@ -5,16 +5,16 @@ import './index.css';
 
 /*
 1. + сделать активными/неактивными кнопки
-2.   кэширование: не загружать данные, если они уже загружены
-3.   стили
+2. + кэширование: не загружать данные, если они уже загружены
+3. + стили
 4.   рефреш - обновление данных для текущей страницы
 */
 class Leaderboard extends React.Component {
     constructor() {
         super();
         this.state = {
-            JSON: [],
-            sort: 'recent'
+            currentData: [],
+            currentChoice: 'recent'
         }
         this.updateJSON = this.updateJSON.bind(this);
 
@@ -34,16 +34,16 @@ class Leaderboard extends React.Component {
 
         if (this.data[period].length > 0) {
             this.setState({
-                JSON: this.data[period],
-                sort: period
+                currentData: this.data[period],
+                currentChoice: period
             });
         } else {
             fetch(href).then( (response) => {
                 return response.json();
             }).then( (data) => {
                 this.setState({
-                    JSON: data,
-                    sort: period
+                    currentData: data,
+                    currentChoice: period
                 });
                 this.data[period] = data;
             }).catch(function(ex) {
@@ -58,13 +58,13 @@ class Leaderboard extends React.Component {
 
     render() {
         return (
-            <Table updateJSON={this.updateJSON} currentState={this.state} />
+            <Table updateJSON={this.updateJSON} currentData={this.state.currentData} currentChoice = {this.state.currentChoice}/>
         );
     }
 }
 
 const Table = (props) => {
-    let rows = props.currentState.JSON.map((person, indexOfPerson) => {
+    let rows = props.currentData.map((person, indexOfPerson) => {
         return <PersonRow
             key = {person.username}
             data = {person}
@@ -79,8 +79,8 @@ const Table = (props) => {
                     <tr>
                         <th>№</th>
                         <th>Camper Name</th>
-                        <th><a href="#" className={props.currentState.sort === 'recent' ? 'link active' : 'link'} onClick={() => {props.updateJSON('recent')} }>Points in past 30 days</a></th>
-                        <th><a href="#" className={props.currentState.sort === 'alltime' ? 'link active' : 'link'} onClick={() => {props.updateJSON('alltime')} }>All time points</a></th>
+                        <th><a href="#" className={props.currentChoice === 'recent' ? 'link active' : 'link'} onClick={() => {props.updateJSON('recent')} }>Points in past 30 days</a></th>
+                        <th><a href="#" className={props.currentChoice === 'alltime' ? 'link active' : 'link'} onClick={() => {props.updateJSON('alltime')} }>All time points</a></th>
                     </tr>
                 </thead>
                 <tbody>
